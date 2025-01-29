@@ -53,7 +53,7 @@ class Panel(ctk.CTk):
         super().__init__()
 
         # setup
-        self.title('collatz version 4')
+        self.title('')
         self.resizable = (False, False)
         initialize_writable_files()
 
