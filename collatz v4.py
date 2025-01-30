@@ -124,7 +124,10 @@ class Panel(ctk.CTk):
         self.mode_image.grid(    row=0,column=1,                 padx=10,pady=10, sticky='e')
         self.graph.grid(         row=1,column=0,   rowspan=12,   padx=10,pady=10, sticky='nsew')
 
-        self.bind_all('<Control-BackSpace>', lambda event: self.clear())
+        if sys.platform == 'darwin':
+            self.bind_all('<Command-BackSpace>', lambda event: self.clear())
+        else:
+            self.bind_all('<Control-BackSpace>', lambda event: self.clear())
 
         self.plot(7)
 
