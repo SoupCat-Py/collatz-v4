@@ -124,6 +124,7 @@ class Panel(ctk.CTk):
         self.mode_image.grid(    row=0,column=1,                 padx=10,pady=10, sticky='e')
         self.graph.grid(         row=1,column=0,   rowspan=12,   padx=10,pady=10, sticky='nsew')
 
+        # set keybind for clearing depending on OS
         if sys.platform == 'darwin':
             self.bind_all('<Command-BackSpace>', lambda event: self.clear())
         else:
@@ -131,6 +132,7 @@ class Panel(ctk.CTk):
 
         self.plot(7)
 
+        # set initial dark mode based on file
         mode_path=writable_path('mode.txt')
         with open (mode_path, 'r') as file:
             content = file.read()
@@ -139,6 +141,7 @@ class Panel(ctk.CTk):
             elif 'light' in content:
                 self.mode_switch.deselect()
 
+    # validate command for number input - only digits
     def validate(self, value):
         if value == "" or value.isdigit():
             if len(value) < 20:
@@ -149,25 +152,26 @@ class Panel(ctk.CTk):
     def plot(self, value):
         global numTitle, values
         if value != '':
-            num = int(value)
-            numTitle = num
-            values = [num]
-            while num != 1:
-                if num % 2 == 0:
-                    num = num / 2
-                else:
-                    num = num * 3 + 1
-                num = round(num)
+            num = int(value)  # get number
+            numTitle = num    # set variable for the graph title and png file
+            values = [num]    # clear values list and only have the number
+            while num != 1:            #
+                if num % 2 == 0:       #
+                    num = num / 2      # actual collatz conjecture math stuff
+                else:                  #
+                    num = num * 3 + 1  #
+                num = round(num)    # rounding to remove the .0
                 values.append(num)
 
-            self.graph.update_graph(values)
+            self.graph.update_graph(values) # update the graph
         else:
-            self.graph.clear_graph()
+            self.graph.clear_graph() # clear the graph if the input is blank
 
     def clear(self):
         self.entry.delete(0,ctk.END)
         self.graph.clear_graph()
     
+    # set number to a random one and update
     def random(self):
         num = random.randint(1,10000)
         self.entry.delete(0, ctk.END)
@@ -175,6 +179,7 @@ class Panel(ctk.CTk):
         if not statsShown:
             self.plot(num)
 
+    # download an image of the current graph
     def dl(self):
         global numTitle
         self.graph.figure.savefig(os.path.expanduser(f'~/Downloads/collatz_{numTitle}'))
@@ -192,26 +197,28 @@ class Panel(ctk.CTk):
         except:
             pass
 
+    # get stats and update the ctk window
     def stats(self):
         global values, statsShown
-        highest_num = max(values)
-        highest_num_index = values.index(highest_num)
+        highest_num = max(values)                       # get highest number
+        highest_num_index = values.index(highest_num)   # get the index
 
-        terms = len(values) - 4
-        if terms < 0:
-            terms = 0
+        terms = len(values) - 4  #
+        if terms < 0:            # number of terms until loop
+            terms = 0            #
 
-        termAverage = sum(values) / len(values)
-        termAverage = round(termAverage, 2)
+        termAverage = sum(values) / len(values)   # get average
+        termAverage = round(termAverage, 2)       # round to 2 places
 
-        odds = evens = 0
-        for value in values:
-            if value % 2 == 0:
-                evens +=1
-            else:
-                odds += 1
+        odds = evens = 0          #
+        for value in values:      #
+            if value % 2 == 0:    #
+                evens +=1         # get odd and even terms
+            else:                 #
+                odds += 1         #
         
         if statsShown:
+            # remove all stats
             self.graph.max.grid_forget()
             self.graph.terms.grid_forget()
             self.graph.sum.grid_forget()
@@ -219,13 +226,14 @@ class Panel(ctk.CTk):
             self.graph.even.grid_forget()
             self.graph.odd.grid_forget()
             self.graph.spacer.grid_forget()
-            self.graph.canvas_widget.grid(row=0, column=0, sticky="nsew")
-            self.stats_button.configure(text='View Stats')
+            self.graph.canvas_widget.grid(row=0, column=0, sticky="nsew")  # show canvas
+            self.stats_button.configure(text='View Stats') # config button
             statsShown = False
         else:
+            # hide graph
             self.graph.canvas_widget.grid_forget()
-            self.graph.show(highest_num, highest_num_index, terms, termAverage, sum(values), evens, odds)
-            self.stats_button.configure(text='Hide Stats')
+            self.graph.show(highest_num, highest_num_index, terms, termAverage, sum(values), evens, odds) # call function to show all stats
+            self.stats_button.configure(text='Hide Stats') # config button
             statsShown = True
 
     def toggle_mode(self):
