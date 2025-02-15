@@ -1,5 +1,4 @@
 # collatz-v4
-Graphs the Collatz Conjecture (3x+1)
 
 <h2>What is the Collatz Conjecture?</h2>
 The Collatz Conjecture is a famous unsolved mathematical problem. <br />
