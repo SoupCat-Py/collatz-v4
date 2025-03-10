@@ -54,7 +54,7 @@ class Panel(ctk.CTk):
 
         # setup
         self.title('')
-        self.resizable = (False, False)
+        self.resizable(False, False)
         initialize_writable_files()
 
         # set dark mode based on text file
